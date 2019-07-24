@@ -12,21 +12,14 @@ setwd("P:/Evaluation/CCBHC IN/Data")
 ccbhc_adult = read.csv("Adult data.csv", header = TRUE, na.strings = c(-1:-11))
 head(ccbhc_adult)
 adult_base = subset(ccbhc_adult, ccbhc_adult$InterviewType_07 == 1)
-dim(adult_base)
+child_base = subset(ccbhc_child, ccbhc_child$InterviewType_07 == 1)
+
+dim(adult_base)[1]+dim(child_base)[1]
+
 ```
-Total N
-```{r}
-ccbhc_child = read.csv("Youth data.csv", header = TRUE, na.strings = c(-1:-11))
-ccbhc_child_base = subset(ccbhc_child, ccbhc_child$InterviewType_07 == 1)
-dim(ccbhc_child_base)
-
-total_n = dim(ccbhc_child_base)[1] + dim(adult_base)[1]
-total_n
-```
-
-
 Age, sex, race, 
 ```{r}
+
 
 #install.packages("descr")
 library(descr)
@@ -36,15 +29,29 @@ library(Hmisc)
 library(prettyR)
 
 describe.factor(adult_base$Agegroup)
-describe.factor(adult_base$RaceWhite)
-describe.factor(adult_base$RaceBlack)
-describe.factor(adult_base$RaceAsian)
-describe.factor(adult_base$HispanicLatino)
-describe.factor(adult_base$Gender)
-##Number of people at baseline
+describe.factor(na.omit(adult_base$RaceWhite))
+describe.factor(na.omit(adult_base$RaceBlack))
+describe.factor(na.omit(adult_base$RaceAsian))
+describe.factor(na.omit(adult_base$HispanicLatino))
+describe.factor(na.omit(adult_base$Gender))
 dim(adult_base)[1]
 ??describe.factor
+
+White_Data_complete=na.omit(adult_base$RaceWhite)
+describe.factor(White_Data_complete)'
+
+Black_Data_complete=na.omit(adult_base$RaceBlack)
+describe.factor(Black_Data_complete)
+
+Asian_Data_complete=na.omit(adult_base$RaceAsian)
+describe.factor(Asian_Data_complete)
+
+HispanicLatino_Data_complete=na.omit(adult_base$HispanicLatino)
+describe.factor(HispanicLatino_Data_complete)
+
+  
 ```
+
 Baseline outcomes
 weight(kg) / height(cm/100)^2
 18 or below =  underweight
@@ -70,19 +77,24 @@ Decrease substance use by 40% among consumers diagnosed with substance use disor
 Experience of violence or trauma 
 Diagnosis
 ```{r}
+###Opiods
 describe.factor(adult_base$RxOpioids_Use)
 RxOpioids_Use_code = ifelse(adult_base$RxOpioids_Use == 1, "Never", ifelse(adult_base$RxOpioids_Use > 1, "Any use", "NA"))
 RxOpioids_Use_code_complete = na.omit(RxOpioids_Use_code)
 describe.factor(RxOpioids_Use_code_complete)
-###Opiods
-describe.factor(RxOpioids_Use_code)
+
 #### Alcohol
 alcohol_use = ifelse(adult_base$Alcohol_Use == 4, "Daily or almost daily", "Non-daily use")
 alcohol_use_complete = na.omit(alcohol_use)
 describe.factor(alcohol_use_complete)
+#### Stimulants
+stim_use = na.omit(ifelse(adult_base$Stimulants_Use > 1, "Any use", "No use"))
+describe.factor(stim_use)
+
 #### Trauma
 trauma = na.omit(adult_base$ViolenceTrauma)
 describe.factor(trauma)
+
 
 ### Average Night homeless
 describe.factor(adult_base$NightsHomeless)
@@ -102,15 +114,32 @@ describe.factor(na.omit(adult_base$Education))
 Blood pressure
 120 below
 ```{r}
-syst_low = ifelse(adult_base$BloodPressureSystolicResponse < 120, "Normal", ifelse(adult_base$BloodPressureSystolicResponse <= 129, "Elevated", ifelse(adult_base$BloodPressureSystolicResponse >= 130, "Hypertension", "Wrong!!!!!")))
+adult_base.BloodPressureSystolicResponse
+syst_low = ifelse(adult_base.BloodPressureSystolicResponse < 120, "Normal", ifelse(adult_base.BloodPressureSystolicResponse <= 129, "Elevated", ifelse(adult_base.BloodPressureSystolicResponse >= 130, "Hypertension", "Wrong!!!!!")))
 
-dat_sys_test = data.frame(syst_low, sys = adult_base$BloodPressureSystolicResponse)
+dat_sys = data.frame(syst_low, sys = adult_base$BloodPressureSystolicResponse)
+
+BPData=data.frame(adult_base$BloodPressureSystolicResponse)
+BPData_complete = na.omit(BPData)
+attach(BPData_complete)
+
 describe.factor(syst_low)
+
 ```
-Top five diagnoses
+Trauma
 ```{r}
-describe.factor(adult_base$DiagnosisOne)
+describe.factor(adult_base$ViolenceTrauma)
+
+TraumaData=data.frame(adult_base$ViolenceTrauma)
+TraumaData_complete = na.omit(TraumaData)
+attach(TraumaData_complete)
+describe.factor(TraumaData_complete)
+
+BustancesData=data.frame(adult_base4)
 ```
+Substance use
+```{r}
+describe.factor(na.omit(adult_base$Alcohol_Use))
 
-
+```
 
