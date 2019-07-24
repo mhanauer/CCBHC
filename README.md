@@ -28,7 +28,13 @@ library(Hmisc)
 #install.packages("prettyR")
 library(prettyR)
 
-describe.factor(adult_base$Agegroup)
+# 5 = 26 to 34; 6 = 35 to 44
+describe.factor(na.omit(adult_base$Agegroup))
+mean_age = mean(na.omit(adult_base$Agegroup))
+mean_age
+round((34-26)*.53,0)+26
+# Child age
+
 describe.factor(na.omit(adult_base$RaceWhite))
 describe.factor(na.omit(adult_base$RaceBlack))
 describe.factor(na.omit(adult_base$RaceAsian))
@@ -108,8 +114,18 @@ describe.factor(na.omit(adult_base$TimesER))
 describe.factor(na.omit(adult_base$NightsHospitalMHC))
 describe.factor(na.omit(adult_base$NightsJail))
 
-###
+###EDU
 describe.factor(na.omit(adult_base$Education))
+
+###Employ
+#1 = EMPLOYED FULL TIME (35+ HOURS PER WEEK, OR WOULD HAVE BEEN)
+#2 = 2 = EMPLOYED PART TIME
+# 3 through 8 unemployed
+employ = na.omit(adult_base$Employment)
+describe.factor(employ)
+employ = ifelse(employ == 1, "Full time", ifelse(employ == 2, "Part time", ifelse(employ == 8, "Other", "Unemployed")))
+describe.factor(employ)
+
 ```
 Blood pressure
 120 below
@@ -117,7 +133,7 @@ Blood pressure
 adult_base.BloodPressureSystolicResponse
 syst_low = ifelse(adult_base.BloodPressureSystolicResponse < 120, "Normal", ifelse(adult_base.BloodPressureSystolicResponse <= 129, "Elevated", ifelse(adult_base.BloodPressureSystolicResponse >= 130, "Hypertension", "Wrong!!!!!")))
 
-dat_sys = data.frame(syst_low, sys = adult_base$BloodPressureSystolicResponse)
+dat_sys = data.frame(syst_low, sys = adult_base.BloodPressureSystolicResponse)
 
 BPData=data.frame(adult_base$BloodPressureSystolicResponse)
 BPData_complete = na.omit(BPData)
@@ -128,12 +144,7 @@ describe.factor(syst_low)
 ```
 Trauma
 ```{r}
-describe.factor(adult_base$ViolenceTrauma)
-
-TraumaData=data.frame(adult_base$ViolenceTrauma)
-TraumaData_complete = na.omit(TraumaData)
-attach(TraumaData_complete)
-describe.factor(TraumaData_complete)
+describe.factor(na.omit(adult_base$ViolenceTrauma))
 
 BustancesData=data.frame(adult_base4)
 ```
@@ -141,5 +152,9 @@ Substance use
 ```{r}
 describe.factor(na.omit(adult_base$Alcohol_Use))
 
+```
+Diagnosis
+```{r}
+describe.factor(na.omit(adult_base$DiagnosisOne))
 ```
 
